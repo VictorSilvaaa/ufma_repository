@@ -10,6 +10,7 @@ class Ambiente:
         self.agents = [] 
         self.resources = [] 
         self.collected_resources = []
+        self.visited_pos = []
     
         self.populate_resources(4)
 
@@ -17,6 +18,7 @@ class Ambiente:
         for y in range(ROWS):
             for x in range(COLS):
                 self.matrix[y][x] = []
+             
 
     # Popula a matriz com os recursos iniciais
     def populate_resources(self, num_resources):
@@ -66,13 +68,19 @@ class Ambiente:
         # Desenha a grid e os objetos
         for y in range(0, HEIGHT, GRID_SIZE):
             for x in range(0, WIDTH, GRID_SIZE):
-                if(x == INITIAL_POS['x'] and y == INITIAL_POS['y']):
-                    pygame.draw.rect(self.screen, RED, (x, y, GRID_SIZE, GRID_SIZE))
-                else:
-                    pygame.draw.rect(self.screen, WHITE, (x, y, GRID_SIZE, GRID_SIZE))
-                pygame.draw.rect(self.screen, BLACK, (x, y, GRID_SIZE, GRID_SIZE), 1)
                 cell_x = x // GRID_SIZE
                 cell_y = y // GRID_SIZE
+                pos = {"x": cell_x, "y": cell_y}
+
+                color = WHITE
+                if(cell_x == INITIAL_POS['x'] and cell_y == INITIAL_POS['y']):
+                    color = RED
+                elif(pos in self.visited_pos):
+                    color = WHITE_DARK
+                
+                pygame.draw.rect(self.screen, color, (x, y, GRID_SIZE, GRID_SIZE))
+                pygame.draw.rect(self.screen, BLACK, (x, y, GRID_SIZE, GRID_SIZE), 1)
+                
                 if len(self.matrix[cell_y][cell_x]) > 0:
                     objects = self.matrix[cell_y][cell_x]
                     num_objects = len(objects)

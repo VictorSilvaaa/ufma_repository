@@ -72,3 +72,6 @@ class Agent:
         })
         
         pygame.event.post(help_event)
+
+    def is_valid_position(self, new_x, new_y, ambiente):
+        return 0 <= new_x < len(ambiente.matrix[0]) and 0 <= new_y < len(ambiente.matrix)

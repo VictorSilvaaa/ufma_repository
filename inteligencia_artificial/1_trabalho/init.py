@@ -2,6 +2,7 @@ import pygame
 from ambiente import Ambiente
 from agent import Agent
 from agents.reactiveAgent import ReactiveAgent
+from agents.stateBasedAgent import StateBasedAgent
 from configs import *
 
 def main():
@@ -13,7 +14,14 @@ def main():
 
     # Criação do ambiente e inicialização dos agentes
     ambiente = Ambiente(screen)  
+
     reactiveAgent = ReactiveAgent()
+    stateBasedAgent = StateBasedAgent()
+
+    agents = [reactiveAgent, stateBasedAgent]
+    
+
+    ambiente.add_element(stateBasedAgent)
     ambiente.add_element(reactiveAgent)
 
     # Variáveis de controle de tempo
@@ -40,9 +48,16 @@ def main():
         #             reactiveAgent.move_agent_to("left")
 
         reactiveAgent.collect_resource(ambiente)
+        stateBasedAgent.collect_resource(ambiente)
+       
         ambiente.render()
-        reactiveAgent.move_agent(ambiente.matrix)
 
+        for agent in agents:
+            pos = agent.move_agent(ambiente) 
+            # Verifica se a posição já foi visitada
+            if pos not in ambiente.visited_pos:
+                ambiente.visited_pos.append(pos) 
+    
         pygame.display.flip()  
 
     pygame.quit()

@@ -8,7 +8,8 @@ class ReactiveAgent(Agent):
         self.known_resources = [{"x": x, "y": y}]
         self.lastDirection = None
 
-    def move_agent(self, matrix):
+    def move_agent(self, ambiente):
+        matrix = ambiente.matrix
         if not self.waitingHelp:
             directions = list(self.directions.values())
             random.shuffle(directions)
@@ -21,7 +22,7 @@ class ReactiveAgent(Agent):
                     for obj in matrix[new_y][new_x]:
                         if isinstance(obj, Resource) and not obj.collected:
                             self.x, self.y = new_x, new_y
-                            return self.x, self.y
+                            return {'x': self.x, 'y': self.y}
 
             # Se não encontrou um recurso, move aleatoriamente para uma posição válida
             for dpos in directions:
@@ -32,6 +33,6 @@ class ReactiveAgent(Agent):
                         self.x, self.y = new_x, new_y
                         break
 
-        return self.x, self.y
+        return {'x': self.x, 'y': self.y}
 
 
