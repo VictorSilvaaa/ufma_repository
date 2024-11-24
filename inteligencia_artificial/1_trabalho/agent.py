@@ -62,6 +62,7 @@ class Agent:
                         obj.collected = True
                         obj.x = self.initialPos['x']
                         obj.y = self.initialPos['y']
+                        self.waitingHelp = False
     
     def request_help(self, resource):
         # Criando um evento de ajuda com informações do recurso
