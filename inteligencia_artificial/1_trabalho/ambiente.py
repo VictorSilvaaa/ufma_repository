@@ -5,13 +5,18 @@ from agent import Agent
 
 class Ambiente:
     def __init__(self, screen):
-        self.screen = screen  # Tela do Pygame passada pelo init.py
+        self.screen = screen  
         self.matrix = [[[] for _ in range(COLS)] for _ in range(ROWS)]
         self.agents = [] 
         self.resources = [] 
     
-        self.populate_resources(4)  # Popula a matriz com os recursos iniciais
-    
+        self.populate_resources(4)
+
+    def clear_matrix(self):
+        for y in range(ROWS):
+            for x in range(COLS):
+                self.matrix[y][x] = []
+
     # Popula a matriz com os recursos iniciais
     def populate_resources(self, num_resources):
         for _ in range(num_resources):
@@ -19,48 +24,48 @@ class Ambiente:
             self.matrix[resource.y][resource.x] = [resource]
             self.resources.append(resource) 
         
-    # Função para adicionar um recurso à matriz e à lista de recursos
+    def get_cell(self, x, y):
+        if 0 <= x < COLS and 0 <= y < ROWS:
+            return self.matrix[y][x]
+        return None
+
+    def remove_resource(self, resource):
+        if resource in self.resources:
+            self.resources.remove(resource)
+        if 0 <= resource.x < COLS and 0 <= resource.y < ROWS:
+            if resource in self.matrix[resource.y][resource.x]:
+                self.matrix[resource.y][resource.x].remove(resource)
+    
     def add_element(self, element):
         pos = get_null_positon(self.matrix)
         element.x = pos['x']
         element.y = pos['y']
         if isinstance(element, Agent):
             self.agents.append(element)
+            element.initialPos = {'x': pos['x'], 'y': pos['y']}
         else:
             self.resources.append(element)
         self.matrix[element.y][element.x].append(element)
-    
-    # Limpa a matriz, removendo agentes e recursos
-    def clear_matrix(self):
-        for y in range(ROWS):
-            for x in range(COLS):
-                self.matrix[y][x] = []
+       
 
-    # Desenha a grid (matriz de quadrados brancos separados por linhas pretas)
     def render(self):
         self.screen.fill(WHITE)  # Limpa a tela com a cor de fundo branca
-
-        # Limpa a matriz (removendo agentes e recursos)
         self.clear_matrix()
 
-        # Atualiza as posições dos agentes na matriz
+        # Atualiza as posições dos agentes e recursos na matriz
         for agent in self.agents: 
             if 0 <= agent.x < COLS and 0 <= agent.y < ROWS:
                 self.matrix[agent.y][agent.x].append(agent)
-
-        # Atualiza as posições dos recursos na matriz
+        
         for resource in self.resources:
             if 0 <= resource.x < COLS and 0 <= resource.y < ROWS:
                 self.matrix[resource.y][resource.x].append(resource)
 
-        # Desenha a grid e os objetos (incluindo os agentes e recursos)
+        # Desenha a grid e os objetos
         for y in range(0, HEIGHT, GRID_SIZE):
             for x in range(0, WIDTH, GRID_SIZE):
-                # Desenha o quadrado da grade
                 pygame.draw.rect(self.screen, WHITE, (x, y, GRID_SIZE, GRID_SIZE))
                 pygame.draw.rect(self.screen, BLACK, (x, y, GRID_SIZE, GRID_SIZE), 1)
-
-                # Se houver objetos na posição (x, y), desenha
                 cell_x = x // GRID_SIZE
                 cell_y = y // GRID_SIZE
                 if len(self.matrix[cell_y][cell_x]) > 0:
