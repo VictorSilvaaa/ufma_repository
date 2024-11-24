@@ -16,6 +16,16 @@ def generate_random_resource(matrix):
     resource = Resource(resource_type, x, y)
     return resource
 
+def get_null_positon(matrix):
+    flag = True
+    while flag:
+        x = random.randint(0, (WIDTH//GRID_SIZE - 1))
+        y = random.randint(0, (HEIGHT//GRID_SIZE - 1))
+        if len(matrix[y][x]) == 0: 
+            flag = False
+
+    return {"x": x, "y": y}
+
 # Função para verificar colisão entre agente e um recurso
 def check_collision(agent_x, agent_y, resource_x, resource_y, agent_size):
     distance = ((agent_x - resource_x) ** 2 + (agent_y - resource_y) ** 2) ** 0.5
