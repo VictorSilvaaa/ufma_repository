@@ -29,20 +29,19 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
         
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP: 
-                    reactiveAgent.move_agent_to("upper")
-                elif event.key == pygame.K_RIGHT: 
-                    reactiveAgent.move_agent_to("right")
-                elif event.key == pygame.K_DOWN:  
-                    reactiveAgent.move_agent_to("down")
-                elif event.key == pygame.K_LEFT:  
-                    reactiveAgent.move_agent_to("left")
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_UP: 
+        #             reactiveAgent.move_agent_to("upper")
+        #         elif event.key == pygame.K_RIGHT: 
+        #             reactiveAgent.move_agent_to("right")
+        #         elif event.key == pygame.K_DOWN:  
+        #             reactiveAgent.move_agent_to("down")
+        #         elif event.key == pygame.K_LEFT:  
+        #             reactiveAgent.move_agent_to("left")
+
         reactiveAgent.collect_resource(ambiente)
         ambiente.render()
-
-        
-       
+        reactiveAgent.move_agent(ambiente.matrix)
 
         pygame.display.flip()  
 

@@ -1,3 +1,5 @@
+import pygame
+
 # tamanho de tela
 WIDTH, HEIGHT = 800, 600
 
@@ -26,3 +28,7 @@ ROWS = HEIGHT // GRID_SIZE
 COLS = WIDTH // GRID_SIZE
 
 PATH_IMGS = "./imgs/"
+
+HELP_REQUEST_EVENT = pygame.event.custom_type()
+
+INITIAL_POS = {'x': 0, 'y': 0}

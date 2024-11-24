@@ -1,5 +1,6 @@
 import random
 from agent import Agent
+from resource import Resource
 
 class ReactiveAgent(Agent):
     def __init__(self, x=0, y=0):
@@ -8,24 +9,29 @@ class ReactiveAgent(Agent):
         self.lastDirection = None
 
     def move_agent(self, matrix):
-        directions = list(self.directions.keys())
-        random.shuffle(directions)
+        if not self.waitingHelp:
+            directions = list(self.directions.values())
+            random.shuffle(directions)
 
-        for direction in directions:
-            dpos = self.directions[direction]
+            # Tenta mover para uma posição com um recurso não coletado
+            for dpos in directions:
+                new_x, new_y = self.x + dpos['x'], self.y + dpos['y']
 
-            new_x = self.x + dpos['x']
-            new_y = self.y + dpos['y']
+                if 0 <= new_x < len(matrix[0]) and 0 <= new_y < len(matrix):
+                    for obj in matrix[new_y][new_x]:
+                        if isinstance(obj, Resource) and not obj.collected:
+                            self.x, self.y = new_x, new_y
+                            return self.x, self.y
 
-            # Verifica se a nova posição está dentro dos limites e se não há outro agente na posição
-            if 0 <= new_x < len(matrix[0]) and 0 <= new_y < len(matrix):
-                exist_agent = False
-                for objects in matrix[new_y][new_x]:
-                    if isinstance(objects, Agent):
-                        exist_agent = True
+            # Se não encontrou um recurso, move aleatoriamente para uma posição válida
+            for dpos in directions:
+                new_x, new_y = self.x + dpos['x'], self.y + dpos['y']
 
-                if(not exist_agent):
-                    self.x = new_x
-                    self.y = new_y
-            
+                if 0 <= new_x < len(matrix[0]) and 0 <= new_y < len(matrix):
+                    if not any(isinstance(obj, Resource) and obj.collected for obj in matrix[new_y][new_x]):
+                        self.x, self.y = new_x, new_y
+                        break
+
         return self.x, self.y
+
+

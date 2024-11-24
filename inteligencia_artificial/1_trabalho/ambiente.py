@@ -9,6 +9,7 @@ class Ambiente:
         self.matrix = [[[] for _ in range(COLS)] for _ in range(ROWS)]
         self.agents = [] 
         self.resources = [] 
+        self.collected_resources = []
     
         self.populate_resources(4)
 
@@ -37,17 +38,18 @@ class Ambiente:
                 self.matrix[resource.y][resource.x].remove(resource)
     
     def add_element(self, element):
-        pos = get_null_positon(self.matrix)
-        element.x = pos['x']
-        element.y = pos['y']
         if isinstance(element, Agent):
+            pos = INITIAL_POS
             self.agents.append(element)
             element.initialPos = {'x': pos['x'], 'y': pos['y']}
         else:
+            pos = get_null_positon(self.matrix)
             self.resources.append(element)
-        self.matrix[element.y][element.x].append(element)
-       
 
+        self.matrix[element.y][element.x].append(element)
+        element.x = pos['x']
+        element.y = pos['y']
+        
     def render(self):
         self.screen.fill(WHITE)  # Limpa a tela com a cor de fundo branca
         self.clear_matrix()
@@ -64,7 +66,10 @@ class Ambiente:
         # Desenha a grid e os objetos
         for y in range(0, HEIGHT, GRID_SIZE):
             for x in range(0, WIDTH, GRID_SIZE):
-                pygame.draw.rect(self.screen, WHITE, (x, y, GRID_SIZE, GRID_SIZE))
+                if(x == INITIAL_POS['x'] and y == INITIAL_POS['y']):
+                    pygame.draw.rect(self.screen, RED, (x, y, GRID_SIZE, GRID_SIZE))
+                else:
+                    pygame.draw.rect(self.screen, WHITE, (x, y, GRID_SIZE, GRID_SIZE))
                 pygame.draw.rect(self.screen, BLACK, (x, y, GRID_SIZE, GRID_SIZE), 1)
                 cell_x = x // GRID_SIZE
                 cell_y = y // GRID_SIZE

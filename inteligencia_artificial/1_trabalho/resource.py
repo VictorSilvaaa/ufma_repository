@@ -13,6 +13,7 @@ class Resource:
         self.utility = RESOURCE_TYPES[resource_type]["utility"]
         self.agents_required = RESOURCE_TYPES[resource_type]["agents_required"]
         self.img = RESOURCE_TYPES[resource_type]["img"]
+        self.collected = False
 
     def __repr__(self):
         return f"Resource(type={self.type}, x={self.x}, y={self.y}, size={self.size}, utility={self.utility})"

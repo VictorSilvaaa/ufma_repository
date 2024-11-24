@@ -21,7 +21,7 @@ def get_null_positon(matrix):
     while flag:
         x = random.randint(0, (WIDTH//GRID_SIZE - 1))
         y = random.randint(0, (HEIGHT//GRID_SIZE - 1))
-        if len(matrix[y][x]) == 0: 
+        if len(matrix[y][x]) == 0 and x!= INITIAL_POS['x']  and y!= INITIAL_POS['y']: 
             flag = False
 
     return {"x": x, "y": y}
