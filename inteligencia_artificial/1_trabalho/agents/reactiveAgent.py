@@ -34,5 +34,3 @@ class ReactiveAgent(Agent):
                         break
 
         return {'x': self.x, 'y': self.y}
-
-

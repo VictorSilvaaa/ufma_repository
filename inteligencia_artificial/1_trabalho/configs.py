@@ -18,6 +18,14 @@ RESOURCE_TYPES = {
     "ancient_structure": {"color": RED, "size": 15, "utility": 50, "agents_required": 2,'img': 'ancient_structure.png'},
 }
 
+# Definição dos tipos de obstáculos
+OBSTACLE_TYPES = {
+    "mountain": {"color": (139, 69, 19), "img": "mountain.png"},  # Marrom
+    "river": {"color": (0, 191, 255), "img": "river.png"},  # Azul claro
+}
+
+
+
 # Definindo o tamanho da célula da grade (o tamanho de cada quadrado)
 GRID_SIZE = 50
 

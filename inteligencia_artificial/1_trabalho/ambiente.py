@@ -2,6 +2,9 @@ import pygame
 from configs import *
 from utils import *
 from agent import Agent
+import random
+from obstacle import Obstacle
+from resource import Resource
 
 class Ambiente:
     def __init__(self, screen):
@@ -9,54 +12,64 @@ class Ambiente:
         self.matrix = [[[] for _ in range(COLS)] for _ in range(ROWS)]
         self.agents = [] 
         self.resources = [] 
+        self.obstacles = []  
         self.collected_resources = []
         self.visited_pos = []
-    
-        self.populate_resources(4)
+
+        self.populate_obstacles(5)
+        self.populate_resources(20)
 
     def clear_matrix(self):
         for y in range(ROWS):
             for x in range(COLS):
                 self.matrix[y][x] = []
              
+    def populate_obstacles(self, num_lines, fileira_tamanho=3):
+        chosen_lines = random.sample(range(ROWS), num_lines)
 
+        for line in chosen_lines:
+            obstacle_type = random.choice(["river", "mountain"])  
+            start_col = random.randint(0, COLS - fileira_tamanho)  # Define a coluna inicial para a fileira
+
+            for col in range(start_col, start_col + fileira_tamanho):  # Cria a fileira de obstáculos
+                obstacle = Obstacle(obstacle_type, col, line)
+                self.matrix[line][col].append(obstacle)
+                self.obstacles.append(obstacle)
+                
     # Popula a matriz com os recursos iniciais
     def populate_resources(self, num_resources):
         for _ in range(num_resources):
             resource = generate_random_resource(self.matrix)
-            self.matrix[resource.y][resource.x] = [resource]
+            self.matrix[resource.y][resource.x].append(resource)
             self.resources.append(resource) 
-        
+    
+    # retorna o conteudo de uma posicao
     def get_cell(self, x, y):
         if 0 <= x < COLS and 0 <= y < ROWS:
             return self.matrix[y][x]
         return None
-
-    def remove_resource(self, resource):
-        if resource in self.resources:
-            self.resources.remove(resource)
-        if 0 <= resource.x < COLS and 0 <= resource.y < ROWS:
-            if resource in self.matrix[resource.y][resource.x]:
-                self.matrix[resource.y][resource.x].remove(resource)
     
+    # adiciona um elemento ao mapa
     def add_element(self, element):
         if isinstance(element, Agent):
             pos = INITIAL_POS
-            self.agents.append(element)
             element.initialPos = {'x': pos['x'], 'y': pos['y']}
+            self.agents.append(element)
         else:
             pos = get_null_positon(self.matrix)
-            self.resources.append(element)
-
-        self.matrix[element.y][element.x].append(element)
+            if isinstance(element, Resource):
+                self.resources.append(element)
+            elif isinstance(element, Obstacle):
+                 self.obstacles.append(element)
+            
         element.x = pos['x']
         element.y = pos['y']
-        
+
+    # exibe o mapa com os elementos em suas posições
     def render(self):
-        self.screen.fill(WHITE)  # Limpa a tela com a cor de fundo branca
+        self.screen.fill(WHITE)  
         self.clear_matrix()
 
-        # Atualiza as posições dos agentes e recursos na matriz
         for agent in self.agents: 
             if 0 <= agent.x < COLS and 0 <= agent.y < ROWS:
                 self.matrix[agent.y][agent.x].append(agent)
@@ -65,7 +78,10 @@ class Ambiente:
             if 0 <= resource.x < COLS and 0 <= resource.y < ROWS:
                 self.matrix[resource.y][resource.x].append(resource)
 
-        # Desenha a grid e os objetos
+        for obstacle in self.obstacles:
+            if 0 <= obstacle.x < COLS and 0 <= obstacle.y < ROWS:
+                self.matrix[obstacle.y][obstacle.x].append(obstacle)
+
         for y in range(0, HEIGHT, GRID_SIZE):
             for x in range(0, WIDTH, GRID_SIZE):
                 cell_x = x // GRID_SIZE

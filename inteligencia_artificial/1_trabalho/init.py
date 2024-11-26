@@ -3,6 +3,8 @@ from ambiente import Ambiente
 from agent import Agent
 from agents.reactiveAgent import ReactiveAgent
 from agents.stateBasedAgent import StateBasedAgent
+from agents.cooperativoAgent import CooperativoAgent
+from agents.objectiveAgent import ObjectiveAgent
 from configs import *
 
 def main():
@@ -17,12 +19,16 @@ def main():
 
     reactiveAgent = ReactiveAgent()
     stateBasedAgent = StateBasedAgent()
+    cooperativoAgent = CooperativoAgent()
+    objetivoAgent = ObjectiveAgent()
 
-    agents = [reactiveAgent, stateBasedAgent]
+    agents = [objetivoAgent]
     
 
     ambiente.add_element(stateBasedAgent)
     ambiente.add_element(reactiveAgent)
+    ambiente.add_element(cooperativoAgent)
+    ambiente.add_element(objetivoAgent)
 
     # Variáveis de controle de tempo
     last_move_time = 0
@@ -36,6 +42,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            # Chama o método handle_event apenas nos agentes que o possuem
+            for agent in agents:
+                if hasattr(agent, 'handle_event'):  # Verifica se o agente tem o método handle_event
+                    agent.handle_event(event)
+
         
         #     if event.type == pygame.KEYDOWN:
         #         if event.key == pygame.K_UP: 
@@ -49,6 +61,8 @@ def main():
 
         reactiveAgent.collect_resource(ambiente)
         stateBasedAgent.collect_resource(ambiente)
+        cooperativoAgent.collect_resource(ambiente)
+        objetivoAgent.collect_resource(ambiente)
        
         ambiente.render()
 

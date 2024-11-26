@@ -13,10 +13,14 @@ class Agent:
         self.speed = 5
         self.img = 'agente.png'
         self.directions = {
-            "upper" : {"x": 0, "y": -1}, 
+            "upper": {"x": 0, "y": -1}, 
             "right": {"x": 1, "y": 0}, 
             "down": {"x": 0, "y": 1}, 
-            "left": {"x": -1, "y": 0}
+            "left": {"x": -1, "y": 0},
+            "upper_right": {"x": 1, "y": -1},  
+            "upper_left": {"x": -1, "y": -1},  
+            "down_right": {"x": 1, "y": 1},    
+            "down_left": {"x": -1, "y": 1}     
         }
         self.waitingHelp = False
         self.collected_objects = []  
