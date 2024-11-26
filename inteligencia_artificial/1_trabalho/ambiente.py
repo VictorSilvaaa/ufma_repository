@@ -17,7 +17,7 @@ class Ambiente:
         self.visited_pos = []
 
         self.populate_obstacles(5)
-        self.populate_resources(20)
+        self.populate_resources(4)
 
     def clear_matrix(self):
         for y in range(ROWS):
@@ -111,3 +111,31 @@ class Ambiente:
                         if offset_x >= GRID_SIZE:
                             offset_x = 0
                             offset_y += max_size
+        
+        self.render_panel()
+
+    def render_panel(self):
+        panel_width = PANEL2_WIDTH  
+        panel_x = WIDTH_T - panel_width  
+        panel_y = 0  
+        panel_height = HEIGHT  
+
+        # Limpa a área do painel com a cor de fundo para não sobrepor o conteúdo anterior
+        pygame.draw.rect(self.screen, WHITE_DARK, (panel_x, panel_y, panel_width, panel_height))
+
+        font = pygame.font.Font(None, 24)
+        y_offset = 20  # Posição vertical inicial para listar os recursos
+
+        # Exibe cada recurso coletado e o agente que o coletou
+        for entry in self.collected_resources:
+            resource = entry["resource"]
+            collecting_agents = entry["agents"]
+            agents_names = ', '.join([agent.name for agent in collecting_agents])  # Coleta os nomes dos agentes
+            text = f"{resource.type} - Coletado por {agents_names}"
+            label = font.render(text, True, (0, 0, 0))  # Renderiza o texto
+            self.screen.blit(label, (panel_x + 10, panel_y + y_offset))  # Desenha o texto na tela
+            y_offset += 30  # Move para a próxima linha
+
+        # A posição do painel não afeta o ambiente (mapa), que será renderizado normalmente em sua área
+
+

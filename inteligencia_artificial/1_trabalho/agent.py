@@ -1,4 +1,5 @@
 import pygame
+import random
 from utils import convert_to_grid_pos
 from configs import *
 from resource import Resource
@@ -37,12 +38,14 @@ class Agent:
         return self.x, self.y         
 
     def collect_resource(self, ambiente):
-        cell = ambiente.get_cell(self.x, self.y)
-
+        cell = ambiente.get_cell(self.x, self.y)  
+        self.waitingHelp = False 
         if cell:
             num_agents_in_cell = sum(1 for element in cell if isinstance(element, Agent))
+
             for obj in cell:
-                if isinstance(obj, Resource):
+                # Verifica se o objeto na célula é um recurso e se ele ainda não foi coletado
+                if isinstance(obj, Resource) and not obj.collected:
                     if obj.agents_required == 1:
                         # Se apenas um agente é necessário, coleta o recurso
                         ambiente.collected_resources.append({
@@ -50,10 +53,10 @@ class Agent:
                             'agents': [self]
                         })
                         obj.collected = True
-                        obj.x = self.initialPos['x']
+                        obj.x = self.initialPos['x']  
                         obj.y = self.initialPos['y']
-                    elif num_agents_in_cell < 2:
-                        # Se mais de um agente é necessário e há menos de dois agentes, envia um pedido de ajuda
+                        cell.remove(obj)   
+                    elif num_agents_in_cell < obj.agents_required :
                         self.waitingHelp = True
                         self.request_help(obj)
                     else:
@@ -63,11 +66,11 @@ class Agent:
                             'resource': obj,
                             'agents': collecting_agents
                         })
-                        obj.collected = True
-                        obj.x = self.initialPos['x']
+                        obj.collected = True  # Marca o recurso como coletado
+                        obj.x = self.initialPos['x']  # Restaura a posição inicial do recurso
                         obj.y = self.initialPos['y']
-                        self.waitingHelp = False
-    
+                        cell.remove(obj)  # Remove o recurso da célula
+
     def request_help(self, resource):
         # Criando um evento de ajuda com informações do recurso
         help_event = pygame.event.Event(HELP_REQUEST_EVENT, {
@@ -80,3 +83,35 @@ class Agent:
 
     def is_valid_position(self, new_x, new_y, ambiente):
         return 0 <= new_x < len(ambiente.matrix[0]) and 0 <= new_y < len(ambiente.matrix)
+    
+    def move_agent(self, ambiente):
+        matrix = ambiente.matrix
+        obstacles = {(o.x, o.y) for o in ambiente.obstacles}  # Pega a posição dos obstáculos no ambiente
+        
+        if not self.waitingHelp:
+            directions = list(self.directions.values())
+            random.shuffle(directions)
+
+            # Tenta mover para uma posição com um recurso não coletado e sem obstáculos
+            for dpos in directions:
+                new_x, new_y = self.x + dpos['x'], self.y + dpos['y']
+
+                if 0 <= new_x < len(matrix[0]) and 0 <= new_y < len(matrix):
+                    # Verifica se a nova posição não contém obstáculos e o recurso não foi coletado
+                    if (new_x, new_y) not in obstacles:
+                        for obj in matrix[new_y][new_x]:
+                            if isinstance(obj, Resource) and not obj.collected:
+                                self.x, self.y = new_x, new_y
+                                return {'x': self.x, 'y': self.y}
+
+            # Se não encontrou um recurso, move aleatoriamente para uma posição válida sem obstáculos
+            for dpos in directions:
+                new_x, new_y = self.x + dpos['x'], self.y + dpos['y']
+
+                if 0 <= new_x < len(matrix[0]) and 0 <= new_y < len(matrix):
+                    # Verifica se a nova posição não contém obstáculos nem recursos coletados
+                    if (new_x, new_y) not in obstacles and not any(isinstance(obj, Resource) and obj.collected for obj in matrix[new_y][new_x]):
+                        self.x, self.y = new_x, new_y
+                        break
+
+        return {'x': self.x, 'y': self.y}

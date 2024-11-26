@@ -2,6 +2,8 @@ import pygame
 
 # tamanho de tela
 WIDTH, HEIGHT = 800, 600
+PANEL2_WIDTH=250
+WIDTH_T, HEIGHT_T = WIDTH+PANEL2_WIDTH, HEIGHT
 
 # cores
 BLACK = (0, 0, 0)

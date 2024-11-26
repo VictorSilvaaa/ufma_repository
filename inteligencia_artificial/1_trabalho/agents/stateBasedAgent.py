@@ -3,9 +3,10 @@ from agent import Agent
 from resource import Resource
 
 class StateBasedAgent(Agent):
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0, y=0, id=1):
         super().__init__(x, y)
         self.img = 'stateBasedAgent.png'
+        self.name = 'Agente Estado ' + str(id)
 
     def move_agent(self, ambiente):
         if self.waitingHelp:

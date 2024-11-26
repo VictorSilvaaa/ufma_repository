@@ -4,10 +4,11 @@ from resource import Resource
 from utils import *
 
 class ObjectiveAgent(Agent):
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0, y=0, id=1):
         super().__init__(x, y)
         self.img = 'Objetivo.png'
         self.objectives = [] 
+        self.name = 'Agente Objetivo ' + str(id)
 
     # Mapeia todos os recursos no ambiente e retorna uma lista com suas posições
     def calculatedObjectives(self, ambiente):
@@ -49,8 +50,9 @@ class ObjectiveAgent(Agent):
 
     def move_agent(self, ambiente):
         if self.waitingHelp:
+            print('entrou')
             return self.x, self.y 
-        
+        print('saiu')
         matrix = ambiente.matrix
         obstacles = {(o.x, o.y) for o in ambiente.obstacles}  
         self.calculatedObjectives(ambiente)

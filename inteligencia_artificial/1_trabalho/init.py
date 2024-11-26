@@ -3,14 +3,14 @@ from ambiente import Ambiente
 from agent import Agent
 from agents.reactiveAgent import ReactiveAgent
 from agents.stateBasedAgent import StateBasedAgent
-from agents.cooperativoAgent import CooperativoAgent
+from agents.cooperativeAgent import CooperativeAgent
 from agents.objectiveAgent import ObjectiveAgent
 from configs import *
 
 def main():
     # Inicialização do Pygame
     pygame.init()  
-    screen = pygame.display.set_mode((WIDTH, HEIGHT)) 
+    screen = pygame.display.set_mode((WIDTH_T, HEIGHT_T)) 
     pygame.display.set_caption("Agente Explorador - Coleta de Recursos")  
     clock = pygame.time.Clock() 
 
@@ -19,10 +19,10 @@ def main():
 
     reactiveAgent = ReactiveAgent()
     stateBasedAgent = StateBasedAgent()
-    cooperativoAgent = CooperativoAgent()
+    cooperativoAgent = CooperativeAgent()
     objetivoAgent = ObjectiveAgent()
 
-    agents = [objetivoAgent]
+    agents = [cooperativoAgent, objetivoAgent]
     
 
     ambiente.add_element(stateBasedAgent)
