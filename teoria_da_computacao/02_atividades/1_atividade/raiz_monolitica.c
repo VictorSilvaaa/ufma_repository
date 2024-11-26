@@ -1,3 +1,5 @@
+//ALUNO: JOÃO VICTOR DA SILVA SALES
+
 #include <stdio.h>
 #include <stdlib.h>
 
