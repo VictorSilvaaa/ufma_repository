@@ -122,3 +122,15 @@ def find_path(start, goal, matrix, obstacles, resources):
 
     return None
 
+def is_valid_position(new_x, new_y, ambiente):
+    # Verifica se a posição está dentro dos limites do ambiente
+    if not (0 <= new_x < len(ambiente.matrix[0]) and 0 <= new_y < len(ambiente.matrix)):
+        return False
+    
+    # Verifica se a posição não contém um obstáculo
+    for obj in ambiente.matrix[new_y][new_x]:
+        if isinstance(obj, Obstacle):  # Supondo que 'Obstacle' seja a classe dos obstáculos
+            return False
+
+    return True
+
