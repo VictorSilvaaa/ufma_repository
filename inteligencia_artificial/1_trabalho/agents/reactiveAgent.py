@@ -12,8 +12,10 @@ class ReactiveAgent(Agent):
           
 
     def move_agent(self, ambiente):
-        if self.collecting and not self.waitingHelp:
-            self.return_to_initial_position(ambiente)
+        if self.waitingHelp:
+            return {'x': self.x, 'y': self.y}
+        if self.collecting:
+            self.move_to(self.initialPos, ambiente)
         else:
             self.explore_environment(ambiente)
 

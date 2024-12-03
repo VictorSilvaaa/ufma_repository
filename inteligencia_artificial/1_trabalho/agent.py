@@ -93,7 +93,8 @@ class Agent:
         })
         pygame.event.post(help_event)
 
-    def return_to_initial_position(self, ambiente):
+    def move_to(self, goalPos, ambiente):
+
         matrix = ambiente.matrix
         obstacles = {(o.x, o.y) for o in ambiente.obstacles}
         resources = [
@@ -103,7 +104,7 @@ class Agent:
         # Encontra o caminho para a posição inicial
         path = find_path(
             start=(self.x, self.y),
-            goal=(self.initialPos['x'], self.initialPos['y']),
+            goal=goalPos,
             matrix=matrix,
             obstacles=obstacles,
             resources=resources,

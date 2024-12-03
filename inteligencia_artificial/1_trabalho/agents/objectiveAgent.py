@@ -9,11 +9,12 @@ class ObjectiveAgent(Agent):
         self.img = 'Objetivo.png'
         self.objectives = [] 
         self.name = 'Agente Objetivo ' + str(id)
+        self.discovered_resources = []
 
     # Mapeia todos os recursos no ambiente e retorna uma lista com suas posições
     def calculatedObjectives(self, ambiente):
         uncollected_resources = [
-            r for r in ambiente.resources if r.collected == False  
+            r for r in self.discovered_resources if r.collected == False  
         ]
 
         # Lista de agentes esperando ajuda com suas coordenadas e prioridade
@@ -50,9 +51,8 @@ class ObjectiveAgent(Agent):
 
     def move_agent(self, ambiente):
         if self.waitingHelp:
-            print('entrou')
             return self.x, self.y 
-        print('saiu')
+       
         matrix = ambiente.matrix
         obstacles = {(o.x, o.y) for o in ambiente.obstacles}  
         self.calculatedObjectives(ambiente)
