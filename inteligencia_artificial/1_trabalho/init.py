@@ -22,7 +22,7 @@ def main():
     cooperativoAgent = CooperativeAgent()
     objetivoAgent = ObjectiveAgent()
 
-    agents = [reactiveAgent, stateBasedAgent]
+    agents = [reactiveAgent, stateBasedAgent, objetivoAgent]
     for agent in agents:
             ambiente.add_element(agent)
 

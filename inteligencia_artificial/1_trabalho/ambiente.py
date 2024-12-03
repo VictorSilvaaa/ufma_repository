@@ -17,7 +17,7 @@ class Ambiente:
         self.visited_pos = []
 
         self.populate_obstacles(5)
-        self.populate_resources(4)
+        self.populate_resources(10)
 
     def clear_matrix(self):
         for y in range(ROWS):

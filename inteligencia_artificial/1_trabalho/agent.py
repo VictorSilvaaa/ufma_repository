@@ -28,14 +28,7 @@ class Agent:
 
     def draw(self, screen):
         agent_x, agent_y = convert_to_grid_pos(self.x, self.y)
-        pygame.draw.circle(screen, self.color, (agent_x, agent_y), self.size)
-
-    def move_agent_to(self, direction):
-        if direction in self.directions:
-            dpos = self.directions[direction]
-            self.x += dpos['x']
-            self.y += dpos['y']
-        return self.x, self.y         
+        pygame.draw.circle(screen, self.color, (agent_x, agent_y), self.size)        
 
     def collect_resource(self, ambiente):
         cell = ambiente.get_cell(self.x, self.y)  
@@ -94,7 +87,6 @@ class Agent:
         pygame.event.post(help_event)
 
     def move_to(self, goalPos, ambiente):
-
         matrix = ambiente.matrix
         obstacles = {(o.x, o.y) for o in ambiente.obstacles}
         resources = [
@@ -104,7 +96,7 @@ class Agent:
         # Encontra o caminho para a posição inicial
         path = find_path(
             start=(self.x, self.y),
-            goal=goalPos,
+            goal=(goalPos['x'], goalPos['y']),
             matrix=matrix,
             obstacles=obstacles,
             resources=resources,
