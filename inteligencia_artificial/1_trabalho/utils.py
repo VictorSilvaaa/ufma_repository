@@ -11,7 +11,7 @@ def generate_random_resource(matrix):
     flag = True
     while flag:
         x = random.randint(0, (WIDTH//GRID_SIZE - 1))
-        y = random.randint(0, (HEIGHT//GRID_SIZE - 1))
+        y = random.randint(1, (HEIGHT//GRID_SIZE - 1))
         if len(matrix[y][x]) == 0: 
             flag = False
 
@@ -101,15 +101,7 @@ def find_path(start, goal, matrix, obstacles, resources):
                 0 <= neighbor[1] < len(matrix) and  # Limites do grid (y)
                 neighbor not in obstacles  # Verifica se não é um obstáculo
             ):
-                # Verifica se o vizinho é um recurso que precisa de dois agentes
-                is_resource_with_two_agents = any(
-                    r.x == neighbor[0] and r.y == neighbor[1] and r.agents_required == 2
-                    for r in resources
-                )
-
-                # Se o recurso precisa de dois agentes, e não é o objetivo do agente, ignora o vizinho
-                if is_resource_with_two_agents and neighbor != goal:
-                    continue
+                
 
                 tentative_g_score = g_score[current] + 1
 

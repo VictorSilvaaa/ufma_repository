@@ -14,10 +14,12 @@ class Ambiente:
         self.resources = [] 
         self.obstacles = []  
         self.collected_resources = []
+        self.uncollected_resources = []
         self.visited_pos = []
+        self.pontuacao = 0
 
         self.populate_obstacles(5)
-        self.populate_resources(10)
+        self.populate_resources(20)
 
     def clear_matrix(self):
         for y in range(ROWS):
@@ -25,36 +27,41 @@ class Ambiente:
                 self.matrix[y][x] = []
              
     def populate_obstacles(self, num_lines, fileira_tamanho=3):
-        chosen_lines = random.sample(range(ROWS), num_lines)
+        chosen_lines = random.sample(range(2, ROWS), num_lines)
 
         for line in chosen_lines:
             obstacle_type = random.choice(["river", "mountain"])  
-            start_col = random.randint(0, COLS - fileira_tamanho)  # Define a coluna inicial para a fileira
+            start_col = random.randint(1, COLS - fileira_tamanho)  
 
-            for col in range(start_col, start_col + fileira_tamanho):  # Cria a fileira de obstáculos
+            for col in range(start_col, start_col + fileira_tamanho):
                 obstacle = Obstacle(obstacle_type, col, line)
                 self.matrix[line][col].append(obstacle)
                 self.obstacles.append(obstacle)
                 
-    # Popula a matriz com os recursos iniciais
     def populate_resources(self, num_resources):
         for _ in range(num_resources):
             resource = generate_random_resource(self.matrix)
             self.matrix[resource.y][resource.x].append(resource)
             self.resources.append(resource) 
     
-    # retorna o conteudo de uma posicao
     def get_cell(self, x, y):
         if 0 <= x < COLS and 0 <= y < ROWS:
             return self.matrix[y][x]
-        return None
+        return []
     
-    # adiciona um elemento ao mapa
+    def calculatedPontuacao(self):
+        self.pontuacao = 0
+        cell = self.get_cell(0, 0) 
+        for obj in cell:
+            if isinstance(obj, Resource):
+                self.pontuacao = self.pontuacao + obj.utility
+
     def add_element(self, element):
         if isinstance(element, Agent):
             pos = INITIAL_POS
             element.initialPos = {'x': pos['x'], 'y': pos['y']}
             self.agents.append(element)
+            element.ambiente = self
         else:
             pos = get_null_positon(self.matrix)
             if isinstance(element, Resource):
@@ -65,7 +72,6 @@ class Ambiente:
         element.x = pos['x']
         element.y = pos['y']
 
-    # exibe o mapa com os elementos em suas posições
     def render(self):
         self.screen.fill(WHITE)  
         self.clear_matrix()
@@ -115,6 +121,7 @@ class Ambiente:
         self.render_panel()
 
     def render_panel(self):
+        self.calculatedPontuacao()
         panel_width = PANEL2_WIDTH  
         panel_x = WIDTH_T - panel_width  
         panel_y = 0  
@@ -126,16 +133,10 @@ class Ambiente:
         font = pygame.font.Font(None, 24)
         y_offset = 20  # Posição vertical inicial para listar os recursos
 
-        # Exibe cada recurso coletado e o agente que o coletou
-        for entry in self.collected_resources:
-            resource = entry["resource"]
-            collecting_agents = entry["agents"]
-            agents_names = ', '.join([agent.name for agent in collecting_agents])  # Coleta os nomes dos agentes
-            text = f"{resource.type} - Coletado por {agents_names}"
-            label = font.render(text, True, (0, 0, 0))  # Renderiza o texto
-            self.screen.blit(label, (panel_x + 10, panel_y + y_offset))  # Desenha o texto na tela
-            y_offset += 30  # Move para a próxima linha
+        text = f"Pontucão: {self.pontuacao}"
+        label = font.render(text, True, (0, 0, 0))  # Renderiza o texto
+        self.screen.blit(label, (panel_x + 10, panel_y + y_offset))  # Desenha o texto na tela
 
-        # A posição do painel não afeta o ambiente (mapa), que será renderizado normalmente em sua área
-
+                
+                   
 

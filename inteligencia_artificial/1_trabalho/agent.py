@@ -23,68 +23,21 @@ class Agent:
             "down_left": {"x": -1, "y": 1}     
         }
         self.waitingHelp = False
-        self.collected_objects = []  
+        self.collected_objects = [] 
         self.carried_resource = None  
-
-    def draw(self, screen):
-        agent_x, agent_y = convert_to_grid_pos(self.x, self.y)
-        pygame.draw.circle(screen, self.color, (agent_x, agent_y), self.size)        
-
-    def collect_resource(self, ambiente):
-        cell = ambiente.get_cell(self.x, self.y)  
-        self.waitingHelp = False 
-         
-        if cell:
-            num_agents_in_cell = sum(1 for element in cell if isinstance(element, Agent))
-
-            for obj in cell:
-                # Verifica se o objeto na célula é um recurso e se ele ainda não foi coletado
-                if isinstance(obj, Resource) and not obj.collected:
-                    if obj.agents_required == 1:
-                        self.collecting = True
-                        # Se apenas um agente é necessário, coleta o recurso
-                        self.carried_resource = obj
-                        obj.collected = True  
-                    elif num_agents_in_cell < obj.agents_required:
-                        self.waitingHelp = True
-                        self.request_help(obj)
-                    else:
-                        # Coleta com múltiplos agentes, se disponível
-                        self.collecting = True
-                        collecting_agents = [element for element in cell if isinstance(element, Agent)]
-                        self.carried_resource = obj  # O agente começa a carregar o recurso
-                        obj.collected = True  # Marca o recurso como coletado
-
-            self.detect_surrounding_resources(ambiente)
-
+        self.ambiente = None
+        self.discovered_objects2 = [] 
         
-    def detect_surrounding_resources(self, ambiente):
-        discovered_resources = []
-
+         
+    def detect_surrounding_resources(self):
+        ambiente = self.ambiente 
         for direction, dpos in self.directions.items():
             new_x, new_y = self.x + dpos['x'], self.y + dpos['y']
             cell = ambiente.get_cell(new_x, new_y)
             if cell:
                 for obj in cell:
-                    if isinstance(obj, Resource) and not obj.collected:
-                        discovered_resources.append(obj)
-
-        if discovered_resources:
-            self.notify_discovered_resources(discovered_resources)
-
-    def notify_discovered_resources(self, resources):
-        for resource in resources:
-            print(f"Resource discovered: {resource.type} at ({resource.x}, {resource.y})")
-            # Aqui você pode adicionar lógica para enviar um evento ou atualizar o ambiente
-
-    def request_help(self, resource):
-        # Criando um evento de ajuda com informações do recurso
-        help_event = pygame.event.Event(pygame.USEREVENT, {
-            "x": resource.x,
-            "y": resource.y,
-            "agents_required": resource.agents_required
-        })
-        pygame.event.post(help_event)
+                    if isinstance(obj, Resource) and not obj.collected and obj not in self.discovered_objects2:
+                        self.discovered_objects2.append(obj)
 
     def move_to(self, goalPos, ambiente):
         matrix = ambiente.matrix
@@ -115,5 +68,5 @@ class Agent:
         if cell:
             for obj in cell:
                 if isinstance(obj, Resource) and not obj.collected:
-                    return True
+                    return obj
         return False
