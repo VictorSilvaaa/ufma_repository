@@ -1,0 +1,11 @@
+{
+    "mailhog": {
+        "name": "mailhog",
+        "host": "mailhog.example",
+        "port": "587",
+        "email": "email@maximize.com.br",
+        "username": "docker",
+        "password": "docker",
+        "mechanism": "PLAIN"
+    }
+}

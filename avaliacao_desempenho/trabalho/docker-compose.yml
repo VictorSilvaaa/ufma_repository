@@ -1,0 +1,56 @@
+version: "3.4"
+
+services:
+  webserver:
+    build:
+      context: ./docker/bin/webserver
+    container_name: "container-webserver"
+    restart: "no"
+    ports:
+      - "${DOCKER_WEBSERVER_PORT}:80"
+    environment:
+      COMPOSER_AUTH: '${COMPOSER_AUTH}'
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    volumes:
+      - ${DOCUMENT_ROOT-./www}:/var/www/html
+      - ${PHP_INI-./docker/config/php/php.ini}:/usr/local/etc/php/php.ini
+      - ${VHOSTS_DIR-./docker/config/vhosts}:/etc/apache2/sites-enabled
+      - ${LOG_DIR-./docker/logs/apache2}:/var/log/apache2
+
+  mysql:
+    volumes:
+      - ${MYSQL_DATA_DIR-./docker/data/mysql}:/var/lib/mysql
+      - ${MYSQL_LOG_DIR-./docker/logs/mysql}:/var/log/mysql
+      - ${MYSQL_CONFIG_DIR-./docker/config/mysql}:/etc/mysql/conf.d
+      - ${MYSQL_DUMP_DIR-./docker/data/dump}:/docker-entrypoint-initdb.d
+    build: ./docker/bin/mysql
+    container_name: "container-mysql"
+    restart: "no"
+    ports:
+      - "${DOCKER_MYSQL_PORT}:8081"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: "container-phpmyadmin"
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 8081
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${DOCKER_PHPMYADMIN_PORT}:8082"
+    volumes:
+      - /sessions
