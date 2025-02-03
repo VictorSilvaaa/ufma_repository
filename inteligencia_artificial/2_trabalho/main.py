@@ -4,7 +4,7 @@ from utils import *
 from csvFunctions import *
 from graficos import *
 
-def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1, tamanho_torneio=3):
+def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1):
     populacao = gerar_populacao(aps, clientes, 2 * len(clientes))
     fitness = [avaliar_solucao(solucao, aps, clientes) for solucao in populacao]
     
@@ -12,15 +12,15 @@ def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1, tamanho_to
         nova_populacao = []
         
         for _ in range(len(populacao) // 2):  # Para cada par de pais
-            pais = selecao_torneio(populacao, fitness, tamanho_torneio)
+            pais = selecao_torneio(populacao, fitness)
             pai1, pai2 = pais[0], pais[1]
             
             # Crossover para gerar filhos
             filho1, filho2 = crossover(pai1, pai2)
             
             # Mutação nos filhos
-            filho1 = mutacao(filho1, taxa_mutacao)
-            filho2 = mutacao(filho2, taxa_mutacao)
+            filho1 = mutacao(filho1, aps, taxa_mutacao)
+            filho2 = mutacao(filho2, aps, taxa_mutacao)
             
             nova_populacao.extend([filho1, filho2])
         
@@ -33,7 +33,9 @@ def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1, tamanho_to
         # Exibir informações a cada geração
         melhor_fitness = max(fitness)
         melhor_individuo = populacao[fitness.index(melhor_fitness)]
-        gerar_grafico(aps, clientes, melhor_individuo, 'melhordageracao_' + str(geracao))
+        #gerar_grafico(aps, clientes, melhor_individuo, 'melhordageracao_' + str(geracao))
+        print(f"Geração {geracao + 1}: \n fitness: {melhor_fitness} \n Distancia media: {calcular_distancia_media(melhor_individuo,aps, clientes)}")
+      
     
     # Retornar o melhor indivíduo
     return populacao[fitness.index(max(fitness))]
