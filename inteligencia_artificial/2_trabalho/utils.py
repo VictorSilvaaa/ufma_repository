@@ -60,13 +60,21 @@ def calcular_distancia_media(solucao, aps, clientes):
     # Retorna a distância média
     return sum(distancias) / len(distancias) if distancias else 0
 
-def selecao_torneio(populacao, fitness, ):
+def selecao_torneio(populacao, fitness, tamanho_torneio=None):
     pais = []
-    tamanho_torneio= len(populacao) // 2 
+    
+    if tamanho_torneio is None:
+        tamanho_torneio = len(populacao) // 6
+    
     for _ in range(2):  # Selecionar dois pais
         torneio = random.sample(range(len(populacao)), tamanho_torneio)  # Seleção de um torneio de tamanho_torneio
-        melhores = [torneio[i] for i in sorted(range(tamanho_torneio), key=lambda i: fitness[torneio[i]], reverse=True)]
-        pais.append(populacao[melhores[0]])  # Seleciona o melhor indivíduo
+        
+        # Ordenar os índices do torneio baseado no fitness e pegar os melhores
+        melhores = sorted(torneio, key=lambda i: fitness[i], reverse=True)
+        
+        # Adicionar o melhor indivíduo ao pool de pais
+        pais.append(populacao[melhores[0]])  
+    
     return pais
 
 # Crossover: Cruzamento de dois pais
@@ -82,7 +90,7 @@ def mutacao(individuo, aps, taxa_mutacao=0.1):
         if random.random() < taxa_mutacao:  # Se o valor aleatório for menor que a taxa de mutação
             ap_atual = individuo[i]  # O AP atual do cliente
             ap_novo = random.choice([ap for ap in aps if ap.nome != ap_atual])  # Escolhe um AP diferente
-            individuo[i] = ap_novo  # Atribui o novo AP
+            individuo[i] = ap_novo.nome  # Atribui o novo AP
     return individuo
 
 

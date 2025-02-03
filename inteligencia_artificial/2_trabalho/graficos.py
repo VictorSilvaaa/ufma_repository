@@ -1,13 +1,13 @@
 import os
 import matplotlib.pyplot as plt
 
-def gerar_grafico(aps, clientes, solucao, nome_arquivo="grafico.png", pasta_destino="graficos"):
-    # Verificar se a pasta existe, se não, criar
-    if not os.path.exists(pasta_destino):
-        os.makedirs(pasta_destino)
-
-    # Construir o caminho completo do arquivo
-    caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
+def gerar_grafico(aps, clientes, solucao, nome_arquivo="grafico.png", nome_pasta="./graficos"):
+    # Garantir que a pasta exista
+    if not os.path.exists(nome_pasta):
+        os.makedirs(nome_pasta)  # Cria a pasta caso não exista
+    
+    # Criar o caminho completo para o arquivo
+    caminho_arquivo = os.path.join(nome_pasta, nome_arquivo)
     
     # Criar um dicionário de cores para cada AP
     cores = {
@@ -21,10 +21,13 @@ def gerar_grafico(aps, clientes, solucao, nome_arquivo="grafico.png", pasta_dest
     # Plotar clientes com cores baseadas nos APs
     for i, cliente in enumerate(clientes):
         ap = next((ap for ap in aps if ap.nome == solucao[i]), None)
-        cor_ap = cores[ap.nome]  
-        # Plotando os clientes com a cor do AP correspondente
-        plt.scatter(cliente.pos[0], cliente.pos[1], color=cor_ap, s=100)
-
+        
+        if ap is not None:
+            cor_ap = cores[ap.nome] 
+            plt.scatter(cliente.pos[0], cliente.pos[1], color=cor_ap, s=100)
+        else:
+            print(f"AVISO: AP não encontrado para o cliente {i+1} ({cliente.pos[0]}, {cliente.pos[1]})")
+    
     # Plotar os APs como quadrados, usando suas cores
     for ap in aps:
         cor_ap = cores[ap.nome]  # Cor do AP
@@ -41,10 +44,7 @@ def gerar_grafico(aps, clientes, solucao, nome_arquivo="grafico.png", pasta_dest
     # Ajuste manual dos margens se necessário
     plt.subplots_adjust(right=0.8)  # Ajuste para garantir que a legenda não sobreponha
 
-    # Salvar o gráfico no arquivo no caminho especificado
+    # Salvar o gráfico no arquivo
     plt.savefig(caminho_arquivo, bbox_inches='tight')  # Salvando o gráfico no arquivo
 
     print(f"Gráfico salvo em {caminho_arquivo}")
-
-# Exemplo de uso:
-# gerar_grafico(aps, clientes, solucao, pasta_destino="graficos/resultado", nome_arquivo="grafico_clientes.png")

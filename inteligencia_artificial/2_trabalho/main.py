@@ -33,7 +33,7 @@ def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1):
         # Exibir informações a cada geração
         melhor_fitness = max(fitness)
         melhor_individuo = populacao[fitness.index(melhor_fitness)]
-        #gerar_grafico(aps, clientes, melhor_individuo, 'melhordageracao_' + str(geracao))
+        gerar_grafico(aps, clientes, melhor_individuo, 'melhordageracao_' + str(geracao))
         print(f"Geração {geracao + 1}: \n fitness: {melhor_fitness} \n Distancia media: {calcular_distancia_media(melhor_individuo,aps, clientes)}")
       
     
