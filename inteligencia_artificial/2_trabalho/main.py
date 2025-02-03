@@ -5,13 +5,25 @@ from csvFunctions import *
 from graficos import *
 
 def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1):
-    populacao = gerar_populacao(aps, clientes, 2 * len(clientes))
+    # Gerar população inicial e calcular o fitness
+    populacao = gerar_populacao(aps, clientes, 4 * len(clientes))
     fitness = [avaliar_solucao(solucao, aps, clientes) for solucao in populacao]
-    
+
     for geracao in range(geracoes):
         nova_populacao = []
         
-        for _ in range(len(populacao) // 2):  # Para cada par de pais
+        # Guardar o melhor indivíduo da população atual
+        indice_melhor_fitness_atual = max(range(len(fitness)), key=lambda i: fitness[i])
+        melhor_individuo_atual = populacao[indice_melhor_fitness_atual]
+
+        #gerar_grafico(aps, clientes, melhor_individuo_atual, 'melhordageracao_' + str(geracao))
+        print(f"Geração {geracao + 1}: \n Distancia media: {calcular_distancia_media(melhor_individuo_atual, aps, clientes)}")
+        
+        # Garantir que o melhor indivíduo esteja na próxima geração
+        nova_populacao.append(melhor_individuo_atual) 
+        
+        # Gerar a nova população com crossover e mutação
+        for _ in range(len(populacao) // 2):  
             pais = selecao_torneio(populacao, fitness)
             pai1, pai2 = pais[0], pais[1]
             
@@ -19,25 +31,16 @@ def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1):
             filho1, filho2 = crossover(pai1, pai2)
             
             # Mutação nos filhos
-            filho1 = mutacao(filho1, aps, taxa_mutacao)
-            filho2 = mutacao(filho2, aps, taxa_mutacao)
+            if(random.random() < taxa_mutacao):
+                filho1 = mutacao(filho1, aps, taxa_mutacao)
+                filho2 = mutacao(filho2, aps, taxa_mutacao)
             
             nova_populacao.extend([filho1, filho2])
         
-        # Avaliar a nova população
         fitness = [avaliar_solucao(solucao, aps, clientes) for solucao in nova_populacao]
-        
-        # Substituir a população antiga pela nova população
         populacao = nova_populacao
         
-        # Exibir informações a cada geração
-        melhor_fitness = max(fitness)
-        melhor_individuo = populacao[fitness.index(melhor_fitness)]
-        gerar_grafico(aps, clientes, melhor_individuo, 'melhordageracao_' + str(geracao))
-        print(f"Geração {geracao + 1}: \n fitness: {melhor_fitness} \n Distancia media: {calcular_distancia_media(melhor_individuo,aps, clientes)}")
-      
     
-    # Retornar o melhor indivíduo
     return populacao[fitness.index(max(fitness))]
 
 apA = Ap('A', 64, (0, 0))
