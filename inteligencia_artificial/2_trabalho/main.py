@@ -16,7 +16,8 @@ def algoritmo_genetico(aps, clientes, geracoes=1000, taxa_mutacao_gene=0.05, tax
         indice_melhor_fitness_atual = max(range(len(fitness)), key=lambda i: fitness[i])
         melhor_individuo_atual = populacao[indice_melhor_fitness_atual]
 
-        #gerar_grafico(aps, clientes, melhor_individuo_atual, 'melhordageracao_' + str(geracao))
+        if(geracao == 0 or geracao % 50 == 0): 
+            gerar_grafico(aps, clientes, melhor_individuo_atual, 'melhordageracao_' + str(geracao))
         print(f"Geração {geracao + 1}: \n Distancia media: {calcular_distancia_media(melhor_individuo_atual, aps, clientes)}")
         
         # Garantir que o melhor indivíduo esteja na próxima geração
