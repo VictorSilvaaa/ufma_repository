@@ -1,16 +1,15 @@
 {
     "configurations": [
         {
-            "name": "Mac",
+            "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "$HOME/openmpi-2.0.4/ompi/include"
+                "/usr/lib/x86_64-linux-gnu/openmpi/include"
             ],
             "defines": [],
-            "macFrameworkPath": [],
-            "compilerPath": "/Users/linguyen/opt/usr/local/bin/mpicc",
+            "compilerPath": "/usr/bin/mpicc",
             "cStandard": "c11",
-            "cppStandard": "gnu++14",
+            "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"
         }
     ],
