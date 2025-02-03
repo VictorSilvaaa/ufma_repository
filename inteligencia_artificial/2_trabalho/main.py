@@ -4,7 +4,7 @@ from utils import *
 from csvFunctions import *
 from graficos import *
 
-def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1):
+def algoritmo_genetico(aps, clientes, geracoes=1000, taxa_mutacao_gene=0.05, taxa_mutacao_filho=0.25):
     # Gerar população inicial e calcular o fitness
     populacao = gerar_populacao(aps, clientes, 4 * len(clientes))
     fitness = [avaliar_solucao(solucao, aps, clientes) for solucao in populacao]
@@ -31,9 +31,10 @@ def algoritmo_genetico(aps, clientes, geracoes=100, taxa_mutacao=0.1):
             filho1, filho2 = crossover(pai1, pai2)
             
             # Mutação nos filhos
-            if(random.random() < taxa_mutacao):
-                filho1 = mutacao(filho1, aps, taxa_mutacao)
-                filho2 = mutacao(filho2, aps, taxa_mutacao)
+            if random.random() <= taxa_mutacao_filho:
+                filho1 = mutacao(filho1, aps, taxa_mutacao_gene)
+            if random.random() <= taxa_mutacao_filho:
+                filho2 = mutacao(filho2, aps, taxa_mutacao_gene)
             
             nova_populacao.extend([filho1, filho2])
         

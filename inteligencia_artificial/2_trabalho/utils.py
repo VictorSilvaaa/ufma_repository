@@ -82,9 +82,10 @@ def crossover(pai1, pai2):
 # Mutação: Introduzir mutações aleatórias
 def mutacao(individuo, aps, taxa_mutacao=0.1):
     for i in range(len(individuo)):
-        ap_atual = individuo[i]  # O AP atual do cliente
-        ap_novo = random.choice([ap for ap in aps if ap.nome != ap_atual])  # Escolhe um AP diferente
-        individuo[i] = ap_novo.nome  # Atribui o novo AP
+        if random.random() <= taxa_mutacao:
+            ap_atual = individuo[i]  
+            ap_novo = random.choice([ap for ap in aps if ap.nome != ap_atual])  
+            individuo[i] = ap_novo.nome  
     return individuo
 
 
