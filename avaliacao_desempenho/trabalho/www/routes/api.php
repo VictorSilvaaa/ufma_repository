@@ -15,5 +15,7 @@ use App\Http\Controllers\FileConversionController;
 */
 
 
-Route::post('/convert', [FileConversionController::class, 'store'])->name('converter');
+Route::middleware('throttle:100,1')->group(function () {
+    Route::post('/convert', [FileConversionController::class, 'store']);
+});
 

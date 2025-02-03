@@ -1,0 +1,63 @@
+# Ignorar arquivos de cache do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorar o diretório de ambiente virtual (por exemplo, venv ou env)
+venv/
+env/
+
+# Ignorar arquivos de configuração de IDEs
+.vscode/
+.idea/
+
+# Ignorar arquivos de pacotes compilados do Python
+*.pyd
+
+# Ignorar arquivos de banco de dados do SQLite
+*.sqlite3
+
+# Ignorar arquivos de logs
+*.log
+
+# Ignorar outros arquivos temporários
+*.tmp
+*.bak
+
+# Ignorar arquivos e pastas de cache do Laravel
+/vendor/
+/node_modules/
+
+/public/storage
+/public/cache
+/public/uploads
+
+# Ignorar os arquivos compilados do PHP
+*.phpunit.result.cache
+*.php_cs.cache
+
+# Ignorar o diretório de ambiente virtual (se estiver usando)
+.env
+
+# Ignorar arquivos de log
+storage/*.log
+
+# Ignorar arquivos temporários
+*.bak
+*.tmp
+
+# Ignorar o diretório de testes gerados (testes de integração)
+tests/_output/
+
+# Ignorar arquivos do IDE
+.idea/
+.vscode/
+
+# Não ignorar a pasta public, mas ignorar arquivos temporários ou cache nela
+/public/uploads/*
+/public/hot/*
+/public/storage/*
+
+# Ignorar arquivos do sistema
+.DS_Store
+Thumbs.db
