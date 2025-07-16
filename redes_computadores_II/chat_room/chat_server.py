@@ -14,6 +14,7 @@ class ChatServer:
         self.clients = {}
         self.lock = threading.Lock()
         self.running = True
+        self.room_password = input("Defina a senha da sala: ")
 
     def start(self):
         self.server.bind((self.host, self.port))
@@ -56,6 +57,12 @@ class ChatServer:
 
             client_socket.send("SENHA:".encode('utf-8'))
             password = client_socket.recv(1024).decode('utf-8').strip()
+
+            # Verifica se a senha da sala está correta
+            if password != self.room_password:
+                client_socket.send("Senha incorreta. Conexão encerrada.\n".encode('utf-8'))
+                client_socket.close()
+                return
 
             with self.lock:
                 if len(self.clients) >= MAX_CLIENTS:
